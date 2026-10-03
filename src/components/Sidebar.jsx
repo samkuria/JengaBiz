@@ -6,6 +6,7 @@ export default function Sidebar() {
       <h1 className="logo">
         JENGA<br/><span className="logo-white">BIZ</span>
       </h1>
+      
       <nav className="nav-menu">
         <button className="nav-button active">Dashboard</button>
         <button className="nav-button">Inventory</button>
@@ -15,10 +16,16 @@ export default function Sidebar() {
         
         {/* Analytics & System */}
         <div style={{ margin: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.1)' }}></div>
+        
         <button className="nav-button">Metrics</button>
         <button className="nav-button">Alerts</button>
         <button className="nav-button">History</button>
       </nav>
+
+      {/* Pushed to the bottom of the sidebar */}
+      <div style={{ marginTop: 'auto', paddingTop: '20px' }}>
+        <button className="nav-button" style={{ width: '100%' }}>Settings</button>
+      </div>
     </aside>
   );
 }
