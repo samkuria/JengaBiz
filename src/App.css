@@ -1,21 +1,22 @@
 :root {
-  /* Professional Business Palette */
-  --brand-gold: #C08A00; /* Darker, more subtle corporate gold */
-  --brand-gold-hover: #A37500;
-  --bg-dashboard: #F3F4F6; /* Soft light gray to make white cards pop */
+  /* The New Professional Palette */
+  --brand-yellow: #FFCC00; /* Your original bright logo yellow */
+  --brand-yellow-hover: #E6B800;
+  --bg-sidebar: #254695; /* Deep Slate Midnight */
+  --bg-header: #FFFFFF;
+  --bg-dashboard: #F8FAFC; /* Cool, ultra-light gray */
   --bg-white: #FFFFFF;
   
   /* Typography Colors */
-  --text-main: #1F2937; /* Dark slate, much softer than pure black */
-  --text-muted: #6B7280;
-  --text-inverse: #FFFFFF; /* Crisp white for the sidebar/header */
+  --text-main: #0F172A; 
+  --text-muted: #64748B;
+  --text-inverse: #F8FAFC; 
   
-  /* Modern UI Elements */
-  --border-light: 1px solid #E5E7EB;
+  /* Crisp Structural Elements */
+  --border-crisp: 1px solid #E2E8F0;
   --radius-md: 8px;
   --radius-lg: 12px;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
 
 body {
@@ -39,25 +40,26 @@ body {
   overflow: hidden;
 }
 
-/* Sidebar Styling */
+/* Deep Slate Sidebar */
 .sidebar {
   width: 260px;
-  background-color: var(--brand-gold);
+  background-color: var(--bg-sidebar);
   color: var(--text-inverse);
   padding: 32px 24px;
   display: flex;
   flex-direction: column;
   gap: 30px;
-  box-shadow: var(--shadow-sm);
   z-index: 10;
 }
 
+/* Logo colored with the accent yellow */
 .logo {
-  font-weight: 800;
-  font-size: 2rem;
+  font-weight: 900;
+  font-size: 2.2rem;
   margin: 0;
-  letter-spacing: -0.5px;
-  line-height: 1.1;
+  letter-spacing: -1px;
+  line-height: 1;
+  color: var(--brand-yellow); 
 }
 
 .nav-menu {
@@ -68,7 +70,7 @@ body {
 
 .nav-button {
   background-color: transparent;
-  color: rgba(255, 255, 255, 0.8);
+  color: #94A3B8; /* Muted slate for inactive links */
   border: none;
   border-radius: var(--radius-md);
   padding: 12px 16px;
@@ -80,17 +82,18 @@ body {
 }
 
 .nav-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.05);
   color: var(--text-inverse);
 }
 
+/* Active state pops with the original yellow */
 .nav-button.active {
-  background-color: var(--bg-white);
-  color: var(--brand-gold);
-  box-shadow: var(--shadow-sm);
+  background-color: var(--brand-yellow);
+  color: #000000;
+  font-weight: 700;
 }
 
-/* Main Content & Header */
+/* Main Content & Crisp Header */
 .main-content {
   flex: 1;
   display: flex;
@@ -99,13 +102,13 @@ body {
 }
 
 .header {
-  background-color: var(--brand-gold);
-  color: var(--text-inverse);
+  background-color: var(--bg-header);
+  color: var(--text-main);
   padding: 20px 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: var(--shadow-sm);
+  border-bottom: var(--border-crisp);
 }
 
 .header-title {
@@ -115,22 +118,21 @@ body {
 }
 
 .action-button {
-  background-color: var(--bg-white);
-  color: var(--brand-gold);
+  background-color: var(--text-main);
+  color: var(--bg-white);
   border: none;
   border-radius: var(--radius-md);
-  padding: 8px 20px;
+  padding: 8px 24px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
-  transition: transform 0.1s ease;
+  transition: background-color 0.2s ease;
 }
 
-.action-button:active {
-  transform: scale(0.97);
+.action-button:hover {
+  background-color: #517ebc;
 }
 
-/* Dashboard Cards */
+/* Dashboard Cards with Crisp Borders */
 .dashboard-content {
   padding: 40px;
   display: flex;
@@ -142,28 +144,22 @@ body {
 .pro-card {
   background-color: var(--bg-white);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  border: var(--border-crisp);
+  box-shadow: var(--shadow-subtle);
   padding: 24px;
-  border: var(--border-light);
 }
 
 .status-card {
-  background-color: var(--brand-gold);
-  color: var(--text-inverse);
-  border: none;
+  border-left: 4px solid var(--brand-yellow); /* Yellow accent line */
 }
 
 .card-title {
   margin: 0 0 8px 0;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-muted);
-}
-
-.status-card .card-title {
-  color: rgba(255, 255, 255, 0.9);
 }
 
 .card-value {
@@ -171,4 +167,5 @@ body {
   margin: 0;
   font-weight: 800;
   color: var(--text-main);
+  letter-spacing: -1px;
 }
