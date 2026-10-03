@@ -5,10 +5,10 @@ function App() {
   return (
     <div className="app-container">
       
-      {/* Sidebar Area */}
+      {/* Dark Slate Sidebar */}
       <aside className="sidebar">
         <h1 className="logo">
-          JENGA<br/>BIZ
+          JENGA<br/><span style={{ color: '#FFFFFF' }}>BIZ</span>
         </h1>
         <nav className="nav-menu">
           <button className="nav-button active">Dashboard</button>
@@ -21,7 +21,7 @@ function App() {
       {/* Main Content Area */}
       <main className="main-content">
         
-        {/* Header Area */}
+        {/* Crisp White Header */}
         <header className="header">
           <h2 className="header-title">Real-Time Overview</h2>
           <button className="action-button">Admin</button>
