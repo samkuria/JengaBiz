@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Dashboard from './components/Dashboard';
+import Inventory from './components/Inventory';
 import './App.css';
 
 // A temporary placeholder for pages we haven't built yet
@@ -26,7 +27,7 @@ function App() {
           {/* Router handles swapping out this section based on the URL */}
           <Routes>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/inventory" element={<PagePlaceholder title="Inventory" />} />
+            <Route path="/inventory" element={<Inventory />} />
             <Route path="/sales" element={<PagePlaceholder title="Sales" />} />
             <Route path="/orders" element={<PagePlaceholder title="Orders" />} />
             <Route path="/credits" element={<PagePlaceholder title="Credits" />} />
