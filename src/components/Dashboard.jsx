@@ -1,8 +1,31 @@
 import React, { useState } from 'react';
+import { 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  LineChart, Line 
+} from 'recharts';
 import MetricCard from './MetricCard';
 
+// Dummy Data for Charts
+const revenueData = [
+  { name: 'Mon', revenue: 4000, expenses: 2400 },
+  { name: 'Tue', revenue: 3000, expenses: 1398 },
+  { name: 'Wed', revenue: 2000, expenses: 9800 },
+  { name: 'Thu', revenue: 2780, expenses: 3908 },
+  { name: 'Fri', revenue: 1890, expenses: 4800 },
+  { name: 'Sat', revenue: 2390, expenses: 3800 },
+  { name: 'Sun', revenue: 3490, expenses: 4300 },
+];
+
+const volumeData = [
+  { time: '8am', units: 12 },
+  { time: '10am', units: 45 },
+  { time: '12pm', units: 78 },
+  { time: '2pm', units: 110 },
+  { time: '4pm', units: 135 },
+  { time: '6pm', units: 142 },
+];
+
 export default function Dashboard() {
-  // State to manage the date picker filter
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
   return (
@@ -40,17 +63,36 @@ export default function Dashboard() {
         {/* Charts Column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', flex: '2 1 600px' }}>
           
+          {/* Bar Chart: Revenue vs Expenses */}
           <div className="pro-card">
-            <h3 className="card-title">Revenue vs Expenses</h3>
-            <div style={{ height: '280px', backgroundColor: 'var(--bg-dashboard)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', border: '1px dashed #CBD5E1', marginTop: '16px' }}>
-              [ Placeholder for Bar Chart ]
+            <h3 className="card-title" style={{ marginBottom: '20px' }}>Revenue vs Expenses</h3>
+            <div style={{ height: '280px', width: '100%' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={revenueData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748B', fontSize: 12 }} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748B', fontSize: 12 }} dx={-10} />
+                  <Tooltip cursor={{ fill: '#F1F5F9' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
+                  <Bar dataKey="revenue" fill="var(--brand-blue)" radius={[4, 4, 0, 0]} name="Revenue ($)" />
+                  <Bar dataKey="expenses" fill="var(--brand-yellow)" radius={[4, 4, 0, 0]} name="Expenses ($)" />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
+          {/* Line Chart: Volume Trends */}
           <div className="pro-card">
-            <h3 className="card-title">Volume Trends (Top Item)</h3>
-            <div style={{ height: '280px', backgroundColor: 'var(--bg-dashboard)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', border: '1px dashed #CBD5E1', marginTop: '16px' }}>
-              [ Placeholder for Line Chart ]
+            <h3 className="card-title" style={{ marginBottom: '20px' }}>Volume Trends (Cement)</h3>
+            <div style={{ height: '280px', width: '100%' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={volumeData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                  <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: '#64748B', fontSize: 12 }} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748B', fontSize: 12 }} dx={-10} />
+                  <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
+                  <Line type="monotone" dataKey="units" stroke="var(--brand-blue)" strokeWidth={3} dot={{ fill: 'var(--brand-yellow)', strokeWidth: 2, r: 4 }} name="Units Sold" />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </div>
           
@@ -65,19 +107,16 @@ export default function Dashboard() {
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             
-            {/* Low Stock Alert */}
             <div style={{ padding: '16px', borderLeft: '4px solid #EF4444', backgroundColor: '#FEF2F2', borderRadius: '0 var(--radius-md) var(--radius-md) 0' }}>
               <p style={{ margin: 0, fontWeight: 700, color: '#991B1B', fontSize: '0.9rem' }}>Low Inventory</p>
               <p style={{ margin: '4px 0 0 0', color: '#B91C1C', fontSize: '0.85rem', lineHeight: 1.4 }}>Bamburi Cement drops below minimum threshold (Current: 14 bags).</p>
             </div>
 
-            {/* Missed Deadline Alert */}
             <div style={{ padding: '16px', borderLeft: '4px solid #F59E0B', backgroundColor: '#FFFBEB', borderRadius: '0 var(--radius-md) var(--radius-md) 0' }}>
               <p style={{ margin: 0, fontWeight: 700, color: '#92400E', fontSize: '0.9rem' }}>Missed Deadline</p>
               <p style={{ margin: '4px 0 0 0', color: '#B45309', fontSize: '0.85rem', lineHeight: 1.4 }}>Wholesale Order #1042 for Site A is 2 hours past fulfillment window.</p>
             </div>
             
-            {/* Low Stock Alert */}
             <div style={{ padding: '16px', borderLeft: '4px solid #EF4444', backgroundColor: '#FEF2F2', borderRadius: '0 var(--radius-md) var(--radius-md) 0' }}>
               <p style={{ margin: 0, fontWeight: 700, color: '#991B1B', fontSize: '0.9rem' }}>Low Inventory</p>
               <p style={{ margin: '4px 0 0 0', color: '#B91C1C', fontSize: '0.85rem', lineHeight: 1.4 }}>Steel Roofing Nails (2-inch) drops below minimum threshold (Current: 2 boxes).</p>
