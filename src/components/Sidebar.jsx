@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 export default function Sidebar() {
   return (
@@ -8,23 +9,24 @@ export default function Sidebar() {
       </h1>
       
       <nav className="nav-menu">
-        <button className="nav-button active">Dashboard</button>
-        <button className="nav-button">Inventory</button>
-        <button className="nav-button">Sales</button>
-        <button className="nav-button">Orders</button>
-        <button className="nav-button">Credits</button>
+        <NavLink to="/" className="nav-button" end>Dashboard</NavLink>
+        <NavLink to="/inventory" className="nav-button">Inventory</NavLink>
+        <NavLink to="/sales" className="nav-button">Sales</NavLink>
+        <NavLink to="/orders" className="nav-button">Orders</NavLink>
+        <NavLink to="/credits" className="nav-button">Credits</NavLink>
         
         {/* Analytics & System */}
         <div style={{ margin: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.1)' }}></div>
         
-        <button className="nav-button">Metrics</button>
-        <button className="nav-button">Alerts</button>
-        <button className="nav-button">History</button>
+        <NavLink to="/metrics" className="nav-button">Metrics</NavLink>
+        <NavLink to="/alerts" className="nav-button">Alerts</NavLink>
+        <NavLink to="/history" className="nav-button">History</NavLink>
       </nav>
 
-      {/* Pushed to the bottom of the sidebar */}
       <div style={{ marginTop: 'auto', paddingTop: '20px' }}>
-        <button className="nav-button" style={{ width: '100%' }}>Settings</button>
+        <NavLink to="/settings" className="nav-button" style={{ display: 'block', textAlign: 'center' }}>
+          Settings
+        </NavLink>
       </div>
     </aside>
   );
