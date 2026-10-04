@@ -111,6 +111,8 @@ body {
   font-size: 1.05rem;
   text-align: left;
   transition: all 0.2s ease;
+  text-decoration: none; /* Removes underline from links */
+  display:block; /* Ensures the entire button area is clickable */
 }
 
 .nav-button:hover {
