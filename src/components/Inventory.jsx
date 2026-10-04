@@ -11,13 +11,17 @@ const initialInventory = [
 export default function Inventory() {
   // --- State Management ---
   const [inventory, setInventory] = useState(initialInventory);
-  const [currentView, setCurrentView] = useState('overview'); // 'overview', 'master', 'low-stock', 'add-item'
+  const [currentView, setCurrentView] = useState('overview'); 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState(null);
+  
+  // Feedback State
   const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   // Form State
   const [formData, setFormData] = useState({ name: '', desc: '', qty: '', bp: '', sp: '' });
+  const [editingId, setEditingId] = useState(null);
 
   // --- Derived Calculations ---
   const totalItems = inventory.reduce((sum, item) => sum + Number(item.qty), 0);
@@ -29,41 +33,94 @@ export default function Inventory() {
     ? inventory.filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
     : [];
 
-  // Form Auto-Calculations
   const calcTotalBp = Number(formData.qty) * Number(formData.bp) || 0;
   const calcTotalSp = Number(formData.qty) * Number(formData.sp) || 0;
   const calcProfit = calcTotalSp - calcTotalBp;
 
   // --- Handlers ---
+  const handleEditClick = () => {
+    setFormData({
+      name: selectedItem.name,
+      desc: selectedItem.desc,
+      qty: selectedItem.qty,
+      bp: selectedItem.bp,
+      sp: selectedItem.sp
+    });
+    setEditingId(selectedItem.id);
+    setSelectedItem(null);
+    setCurrentView('add-item');
+  };
+
+  const handleCancelForm = () => {
+    setFormData({ name: '', desc: '', qty: '', bp: '', sp: '' });
+    setEditingId(null);
+    setCurrentView('overview');
+  };
+
   const handleSaveItem = (e) => {
     e.preventDefault();
-    const newItem = {
-      id: Date.now(),
-      name: formData.name,
-      desc: formData.desc,
-      qty: Number(formData.qty),
-      bp: Number(formData.bp),
-      sp: Number(formData.sp)
-    };
-    setInventory([...inventory, newItem]);
+    let message = '';
+
+    if (editingId) {
+      // 1. Explicitly editing an existing item
+      setInventory(inventory.map(item => 
+        item.id === editingId 
+          ? { ...item, name: formData.name, desc: formData.desc, qty: Number(formData.qty), bp: Number(formData.bp), sp: Number(formData.sp) }
+          : item
+      ));
+      message = `${formData.name} has been successfully updated.`;
+    } else {
+      // 2. Smart Check: Does this exact item already exist?
+      const existingItemIndex = inventory.findIndex(
+        item => item.name.toLowerCase() === formData.name.toLowerCase() && 
+                item.desc.toLowerCase() === formData.desc.toLowerCase()
+      );
+
+      if (existingItemIndex >= 0) {
+        // Smart Add: Update quantity and apply the latest prices
+        const updatedInventory = [...inventory];
+        updatedInventory[existingItemIndex].qty += Number(formData.qty);
+        updatedInventory[existingItemIndex].bp = Number(formData.bp);
+        updatedInventory[existingItemIndex].sp = Number(formData.sp);
+        setInventory(updatedInventory);
+        message = `Smart Add: Matched existing inventory. Added ${formData.qty} units to ${formData.name}.`;
+      } else {
+        // 3. Completely new item
+        const newItem = {
+          id: Date.now(),
+          name: formData.name,
+          desc: formData.desc,
+          qty: Number(formData.qty),
+          bp: Number(formData.bp),
+          sp: Number(formData.sp)
+        };
+        setInventory([...inventory, newItem]);
+        message = `${formData.name} has been successfully added to the master inventory.`;
+      }
+    }
+
+    setSuccessMessage(message);
     setShowSuccess(true);
   };
 
   const handleSuccessAcknowledge = () => {
     setShowSuccess(false);
     setFormData({ name: '', desc: '', qty: '', bp: '', sp: '' });
+    setEditingId(null);
     setCurrentView('overview');
   };
 
   // --- View Renders ---
 
-  // 1. ADD ITEM FORM VIEW
+  // 1. ADD / EDIT ITEM FORM VIEW
   if (currentView === 'add-item') {
     return (
       <div className="dashboard-content">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 style={{ margin: 0, fontWeight: 800, color: 'var(--text-main)' }}>Add New Item</h2>
-          <button onClick={() => setCurrentView('overview')} className="action-button" style={{ backgroundColor: '#64748B' }}>Cancel</button>
+          <h2 style={{ margin: 0, fontWeight: 800, color: 'var(--text-main)' }}>
+            {editingId ? 'Edit Inventory Item' : 'Add New Item'}
+          </h2>
+          <button onClick={handleCancelForm} className="action-button" style={{ backgroundColor: '#64748B' }}>Cancel</button>
         </div>
 
         <form onSubmit={handleSaveItem} className="pro-card" style={{ maxWidth: '800px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -90,7 +147,6 @@ export default function Inventory() {
             </div>
           </div>
 
-          {/* Auto-Calculated Fields */}
           <div style={{ backgroundColor: 'var(--bg-dashboard)', padding: '20px', borderRadius: 'var(--radius-md)', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px', border: 'var(--border-crisp)' }}>
             <div>
               <p style={{ margin: '0 0 5px 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Total Buying Price</p>
@@ -106,15 +162,16 @@ export default function Inventory() {
             </div>
           </div>
 
-          <button type="submit" className="action-button" style={{ padding: '14px', fontSize: '1.1rem', backgroundColor: 'var(--brand-yellow)', color: '#000' }}>Save Item</button>
+          <button type="submit" className="action-button" style={{ padding: '14px', fontSize: '1.1rem', backgroundColor: 'var(--brand-yellow)', color: '#000' }}>
+            {editingId ? 'Update Item Details' : 'Save Item'}
+          </button>
         </form>
 
-        {/* Success Modal Pop-up */}
         {showSuccess && (
           <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 100 }}>
-            <div className="pro-card" style={{ textAlign: 'center', padding: '40px', maxWidth: '400px' }}>
+            <div className="pro-card" style={{ textAlign: 'center', padding: '40px', maxWidth: '450px' }}>
               <h2 style={{ color: '#16A34A', margin: '0 0 10px 0' }}>Success!</h2>
-              <p style={{ marginBottom: '24px' }}>{formData.name} has been successfully added to the master inventory.</p>
+              <p style={{ marginBottom: '24px', lineHeight: 1.5 }}>{successMessage}</p>
               <button onClick={handleSuccessAcknowledge} className="action-button" style={{ width: '100%' }}>Okay</button>
             </div>
           </div>
@@ -123,7 +180,7 @@ export default function Inventory() {
     );
   }
 
-  // 2. DATA TABLES VIEW (Master & Low Stock)
+  // 2. DATA TABLES VIEW
   if (currentView === 'master' || currentView === 'low-stock') {
     const tableData = currentView === 'master' ? inventory : [...lowStockItems, ...outOfStockItems];
     const tableTitle = currentView === 'master' ? 'Master Inventory Table' : 'Low & Out of Stock Items';
@@ -166,11 +223,9 @@ export default function Inventory() {
     );
   }
 
-  // 3. MAIN INVENTORY OVERVIEW (Default)
+  // 3. MAIN INVENTORY OVERVIEW
   return (
     <section className="dashboard-content">
-      
-      {/* Top Actions */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
         <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800 }}>Inventory Management</h2>
         <div style={{ display: 'flex', gap: '12px' }}>
@@ -180,7 +235,6 @@ export default function Inventory() {
         </div>
       </div>
 
-      {/* KPI Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
         <div className="pro-card status-card">
           <h4 className="card-title">Total Items in Stock</h4>
@@ -197,7 +251,6 @@ export default function Inventory() {
         </div>
       </div>
 
-      {/* Search Bar & Instant Results */}
       <div className="pro-card" style={{ marginTop: '10px' }}>
         <h3 className="card-title" style={{ marginBottom: '16px' }}>Quick Item Search</h3>
         <input 
@@ -226,11 +279,9 @@ export default function Inventory() {
         )}
       </div>
 
-      {/* Floating Item Details Modal */}
       {selectedItem && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 100 }}>
           <div className="pro-card" style={{ width: '100%', maxWidth: '400px', position: 'relative' }}>
-            {/* Bubble X Close Button */}
             <button 
               onClick={() => setSelectedItem(null)}
               style={{ position: 'absolute', top: '-15px', right: '-15px', width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#EF4444', color: '#FFF', border: 'none', cursor: 'pointer', fontSize: '1.2rem', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 4px 6px rgba(0,0,0,0.2)' }}
@@ -260,7 +311,7 @@ export default function Inventory() {
               </div>
             </div>
             
-            <button className="action-button" style={{ width: '100%', backgroundColor: 'var(--brand-yellow)', color: '#000' }}>Edit Item</button>
+            <button onClick={handleEditClick} className="action-button" style={{ width: '100%', backgroundColor: 'var(--brand-yellow)', color: '#000' }}>Edit Item</button>
           </div>
         </div>
       )}
