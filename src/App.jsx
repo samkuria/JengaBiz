@@ -4,6 +4,7 @@ import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Dashboard from './components/Dashboard';
 import Inventory from './components/Inventory';
+import Sales from './components/Sales';
 import './App.css';
 
 // A temporary placeholder for pages we haven't built yet
@@ -28,7 +29,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/inventory" element={<Inventory />} />
-            <Route path="/sales" element={<PagePlaceholder title="Sales" />} />
+            <Route path="/sales" element={<Sales />} />
             <Route path="/orders" element={<PagePlaceholder title="Orders" />} />
             <Route path="/credits" element={<PagePlaceholder title="Credits" />} />
             <Route path="/metrics" element={<PagePlaceholder title="Metrics" />} />
